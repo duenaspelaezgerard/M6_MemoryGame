@@ -1,3 +1,12 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+.girando {
+    background-image: url("/espalda.webp");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 314px;
+}
