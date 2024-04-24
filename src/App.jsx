@@ -7,8 +7,8 @@ import Registro from "./vistas/Registro.jsx";
 import Login from "./vistas/Login.jsx";
 
 
-
 function App() {
+
   return (
     <>
       <ContextoGlobalProvider>
@@ -20,7 +20,7 @@ function App() {
                 <Route path='/' element={<Login/>}/>
                 {/* <Route path='/acercade' element={<VistaAcercaDe/>}/> */}
             </Routes>
-        </ContextoGlobalProvider>
+      </ContextoGlobalProvider>
 
         
     </>

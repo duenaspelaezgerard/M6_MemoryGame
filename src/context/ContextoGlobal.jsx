@@ -1,5 +1,6 @@
 import { createContext, useState } from "react";
 import { supabase } from "../supabase/Supabase";
+import { useNavigate } from "react-router-dom";
 
 
 export const ContextoGlobal = createContext()
@@ -8,23 +9,21 @@ export function ContextoGlobalProvider ({children}){
     
     const [contadorGlobal, setContadorGlobal] = useState(0)
     const [isLoggedIn, setIsLoggedIn] = useState(false)
-    
+    const navigate = useNavigate()
+
     const incrementarContadorGlobal = () => {
       setContadorGlobal(contadorGlobal + 1)
     }
 
-    verSiHaySesionLogeado()
-
     async function verSiHaySesionLogeado(){
-        try {
-        const { data: { user } } = await supabase.auth.getUser()
-        console.log('usuario logeado', user)
 
-        if(user){
-            setUsuario({
-            email: user.email
-            })
-        }
+        try {
+            const { data: { user } } = await supabase.auth.getUser()
+            
+            if(user){
+                setIsLoggedIn(true)
+                navigate('/juego')
+            }
 
         } catch (error) {
             console.log(error)
@@ -45,6 +44,7 @@ export function ContextoGlobalProvider ({children}){
             contadorGlobal, setContadorGlobal, incrementarContadorGlobal,
             usuario, setUsuario,
             isLoggedIn, setIsLoggedIn,
+            verSiHaySesionLogeado,
         }}>
             {children}
         </ContextoGlobal.Provider>
