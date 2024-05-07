@@ -3,10 +3,38 @@
 @tailwind utilities;
 
 
-.girando {
-    background-image: url("/espalda.webp");
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
-    height: 314px;
-}
+/* Definición de la clase "girando" con diferentes alturas para diferentes tamaños de pantalla */
+@media (min-width: 640px) {
+    .girando {
+      background-image: url("/espalda.webp");
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+      height: 64px; /* Altura para pantallas pequeñas */
+    }
+  }
+
+  @media (min-width: 768px) {
+    .girando {
+      height: 80px; /* Altura para pantallas medianas */
+    }
+  }
+  
+  @media (min-width: 868px) {
+    .girando {
+      height: 180px; /* Altura para pantallas medianas */
+    }
+  }
+
+  @media (min-width: 968px) {
+    .girando {
+      height: 280px; /* Altura para pantallas medianas */
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .girando {
+      height: 314px; /* Altura para pantallas grandes */
+    }
+  }
+  

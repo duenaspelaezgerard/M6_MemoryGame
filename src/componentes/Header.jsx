@@ -33,7 +33,7 @@ export default function Header() {
     return (
       <header className="bg-cyan-800 py-6">
         <div className="container mx-auto items-center">
-          <ul className="flex space-x-4 justify-end"> 
+          <ul className="flex space-x-4 justify-end">
             {!isLoggedIn && (
               <>
                 <li>
@@ -59,7 +59,7 @@ export default function Header() {
                     </Link>
                   </li>
                 </ul>
-                <ul className="flex space-x-3"> 
+                <ul className="flex space-x-3">
                   <li>
                     <Link to="/juego" className="bg-cyan-100 font-bold text-cyan-800 border p-2 px-3 shadow-lg">
                       Pokemon Memory
@@ -75,7 +75,7 @@ export default function Header() {
                       Acerca de
                     </Link>
                   </li>
-                </ul>                
+                </ul>
                 <ul>
                   <li>
                     <Link to="/" onClick={handleLogout} className="bg-cyan-100 font-bold text-cyan-800 border p-2 me-2">
@@ -83,11 +83,11 @@ export default function Header() {
                     </Link>
                   </li>
                 </ul>
-                
               </>
             )}
           </ul>
         </div>
       </header>
+
     )
   }

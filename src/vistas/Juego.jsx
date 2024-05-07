@@ -4,6 +4,8 @@ import { ContextoGlobal } from "../context/ContextoGlobal.jsx";
 
 export default function Juego() {
     const [pokemonAletorios, setPokemonsAleatorios] = useState([]);
+    const [timeLeft, setTimeLeft] = useState(20);
+    const {puntuacion} = useContext(ContextoGlobal)
 
     useEffect(() => {
         async function fetchData(){
@@ -23,6 +25,7 @@ export default function Juego() {
                         nombre: data.name,
                         imagen: data.sprites.other['official-artwork'].front_default,
                         estado: false,
+                        pareja: false,
                     })
                 }
                 
@@ -45,6 +48,23 @@ export default function Juego() {
         fetchData();
     }, []);
 
+    useEffect(() => {
+
+        const timer = setTimeout(() => {
+          setTimeLeft(prevTime => {
+            if(prevTime <= 1) {
+              clearTimeout(timer);    
+              return 0;
+            } else {
+              return prevTime - 1;
+            }
+          });
+        }, 1000);
+
+        return () => clearTimeout(timer)
+
+      }, [timeLeft]);
+
     
     const ContadorGlobal = () => {
         const { contadorGlobal } = useContext(ContextoGlobal);
@@ -61,7 +81,9 @@ export default function Juego() {
             <div className="container mx-auto">
                         <h1 className="text-3xl text-center uppercase mt-3">Pokemons Memory</h1>
                         <ContadorGlobal />
-                        <GrupoTarjeta tarjetas={pokemonAletorios} />
+                        <button className="text-white bg-gray-800 px-4 py-2 rounded mt-4">Tiempo Restante: {timeLeft}s</button>
+                        <button className="text-white bg-gray-800 px-4 py-2 rounded ml-4 mt-4">Puntuacion: {puntuacion}</button>
+                        <GrupoTarjeta tarjetas={pokemonAletorios} setPokemonsAleatorios={setPokemonsAleatorios}/>
             </div>
 
     )

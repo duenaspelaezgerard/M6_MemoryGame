@@ -1,60 +1,69 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import Tarjeta from './Tarjeta';
+import { ContextoGlobal } from "../context/ContextoGlobal"
 
 export default function GrupoTarjeta({ tarjetas }) {
-    const [tarjetaSeleccionada, setTarjetaSeleccionada] = useState(null);
 
-    const handleCardClick = (id) => {
+    const { puntuacion, setPuntuacion } = useContext(ContextoGlobal);
+    const [primerClick, setPrimerClick] = useState(null);
+    const [tarjetasGiradas, setTarjetasGiradas] = useState([]);
+    const [idCoincidentes, setIdCoincidentes] = useState([]);
 
-        if (tarjetaSeleccionada === null) {
-            setTarjetaSeleccionada(id);
+    const handleCardClick = (id, estado) => {
+
+        console.log('id', id)
+        console.log('estado', estado) 
+
+        if (primerClick === null) {
+            const primeraCarta = tarjetas.find(tarjeta => tarjeta.id === id)
+            primeraCarta.estado = true
+            setPrimerClick(id);
+        } else {
+            const segundaCarta = tarjetas.find(tarjeta => tarjeta.id === id)
+            segundaCarta.estado = true
+            setTarjetasGiradas([...tarjetasGiradas, primerClick, id]);
+            
+            compararCartas(primerClick, id);
+            setPrimerClick(null);
         }
-    }
+        
+    };
 
-    const compararCartas = () => {
-        if (tarjetaSeleccionada !== null) {
-            // Obtener la tarjeta seleccionada actualmente
-            const tarjetaActual = tarjetas.find(tarjeta => tarjeta.id === tarjetaSeleccionada);
+    const compararCartas = (primerClick, segundoClick) => {
+        const primeraCarta = tarjetas.find(tarjeta => tarjeta.id === primerClick);
+        console.log('primeraCarta', primeraCarta)
+        const segundaCarta = tarjetas.find(tarjeta => tarjeta.id === segundoClick);
+        console.log('segundaCarta', segundaCarta)
+    
+        if (primeraCarta.idPokemon === segundaCarta.idPokemon) {
 
-            // Buscar otras tarjetas seleccionadas
-            const otrasTarjetasSeleccionadas = tarjetas.filter(tarjeta => tarjeta.estado && tarjeta.id !== tarjetaSeleccionada);
+            console.log('ENHORABUENA HAS ENCONTRADO UNA PAREJA')
+            setIdCoincidentes([...idCoincidentes, primerClick, segundoClick]);
+            setPuntuacion(puntuacion + 10);
+        } else {
 
-            // Si hay otra tarjeta seleccionada, comprobar si hay coincidencia
-            if (otrasTarjetasSeleccionadas.length > 0) {
-                const otraTarjeta = otrasTarjetasSeleccionadas[0]; // Solo comparamos con la primera tarjeta seleccionada
+            console.log('Oops! Las cartas no coinciden');
+            console.log('tarjetasGiradas', tarjetasGiradas)
+            setTimeout(() => {
 
-                if (tarjetaActual.nombre === otraTarjeta.nombre) {
-                    console.log('¡Pareja encontrada!');
-                    // Aquí podrías mantener las tarjetas giradas o realizar alguna otra acción
-                } else {
-                    console.log('¡Pareja no encontrada!');
-                    // Aquí podrías revertir las tarjetas a su estado original (boca abajo) o realizar alguna otra acción
-                }
-
-                // Limpiar la selección de tarjetas después de comparar
-                setTimeout(() => {
-                    setTarjetaSeleccionada(null);
-                }, 1000);
-            }
+                primeraCarta.estado = false;
+                segundaCarta.estado = false;
+            }, 500); 
         }
-    }
-
-    useEffect(() => {
-        // Llamar a la función compararCartas cada vez que se actualiza tarjetaSeleccionada
-        compararCartas();
-    }, [tarjetaSeleccionada]);
+    };
 
     return (
-        <div className="container mx-auto grid grid-cols-6 gap-4 p-10">
+        <div className="container mx-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 p-5">
             {tarjetas.map((tarjeta, index) => (
                 <Tarjeta
-                    key={index}
-                    id={tarjeta.id}
-                    
-                    nombre={tarjeta.nombre}
-                    imagen={tarjeta.imagen}
-                    estado={tarjeta.id === tarjetaSeleccionada}
-                    onCardClick={() => handleCardClick(tarjeta.id)}
+                key={index}
+                id={tarjeta.id}
+                idPokemon={tarjeta.idPokemon}
+                nombre={tarjeta.nombre}
+                imagen={tarjeta.imagen}
+                estado={tarjeta.estado}
+                pareja={idCoincidentes.includes(tarjeta.id)}
+                onCardClick={() => handleCardClick(tarjeta.id, tarjeta.estado)}
                 />
             ))}
         </div>
