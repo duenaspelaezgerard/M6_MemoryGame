@@ -31,7 +31,7 @@ export default function Registro() {
 
                 if(error)throw new Error (error.message)
                 setUsuario({
-                email: data.email
+                    email: data.email
                 })
 
                 const { data: usu, error: errorUsu } = await supabase

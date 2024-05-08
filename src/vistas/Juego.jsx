@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function Juego() {
     const [pokemonAletorios, setPokemonsAleatorios] = useState([]);
+    const [numerosAleatorios, setNumerosAleatorios] = useState([]);
     const [timeLeft, setTimeLeft] = useState(20);
     const {puntuacion} = useContext(ContextoGlobal)
     const navigate = useNavigate()
@@ -12,35 +13,46 @@ export default function Juego() {
 
     useEffect(() => {
         async function fetchData(){
+
             try {
-                const pokemons = []
-                for(let i = 0; i < 9; i++) {
-                    const random = Math.floor(Math.random() * 151   )
-                    const response = await fetch('https://pokeapi.co/api/v2/pokemon/' + random);
-                    if (!response.ok) {
-                        throw new Error('Failed to fetch data');
-                    }
-                    const data = await response.json();
-
-                    pokemons.push({
-                        id: null,
-                        idPokemon: data.id,
-                        nombre: data.name,
-                        imagen: data.sprites.other['official-artwork'].front_default,
-                        estado: false,
-                        pareja: false,
-                    })
-                }
-                
-                const pokemonDuplicados = [...pokemons, ...pokemons].map((pokemon, index) => ({
-                    ...pokemon,
-                    id: index, 
-                }));
+                const pokemons = [];
+                const url = 'https://pokeapi.co/api/v2/pokemon/';
         
-
-                const pokemonRandom = pokemonDuplicados.sort(() => Math.random() - 0.5);
-                                
-                setPokemonsAleatorios(pokemonRandom);
+                const numeros = [];
+                while (numeros.length < 9) {
+                    const random = Math.floor(Math.random() * 151) + 1;
+                    if (!numeros.includes(random)) {
+                        numeros.push(random);
+                    }
+                }
+        
+                const urlFetch = [];
+                for(let i = 0; i < 9; i++) {
+                    const urlCompleta = new URL(url + numeros[i]);
+                    urlFetch.push(fetch(urlCompleta.href).then(resp => resp.json()));
+                }
+        
+                Promise.all(urlFetch).then(data => {
+                    for(let i = 0; i < 9; i++) {
+                        pokemons.push({
+                            id: null,
+                            idPokemon: data[i].id,
+                            nombre: data[i].name,
+                            imagen: data[i].sprites.other['official-artwork'].front_default,
+                            estado: false,
+                            pareja: false,
+                        });
+                    }
+        
+                    const pokemonDuplicados = [...pokemons, ...pokemons].map((pokemon, index) => ({
+                        ...pokemon,
+                        id: index, 
+                    }));
+        
+                    const pokemonRandom = pokemonDuplicados.sort(() => Math.random() - 0.5);
+        
+                    setPokemonsAleatorios(pokemonRandom);
+                });
             } catch (error) {
                 console.error(error.message);
             } finally {
@@ -48,6 +60,7 @@ export default function Juego() {
             }        
         }
         
+
         fetchData();
     }, []);
 
@@ -56,11 +69,11 @@ export default function Juego() {
         const timer = setTimeout(() => {
           setTimeLeft(prevTime => {
             if(prevTime < 1) {
-              clearTimeout(timer);
-              navigate('/ranking')    
-              return 0;
+                navigate('/ranking')
+                clearTimeout(timer)   
+                return 0
             } else {
-              return prevTime - 1;
+                return prevTime - 1
             }
           });
         }, 1000);
@@ -81,7 +94,7 @@ export default function Juego() {
     }
 
     return (
-        <div className="bg-cyan-100">
+        <div className="bg-cyan-100 h-screen">
             <div className="container mx-auto">
                         <h1 className="text-3xl text-center uppercase">Pokemons Memory</h1>
                         <ContadorGlobal />

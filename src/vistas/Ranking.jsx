@@ -1,19 +1,80 @@
 import { useContext, useEffect, useState } from "react";
-import GrupoTarjeta from "../componentes/GrupoTarjeta"
 import { ContextoGlobal } from "../context/ContextoGlobal.jsx";
+import { supabase } from "../supabase/Supabase";
 
 export default function Ranking() {
     const {puntuacion} = useContext(ContextoGlobal)
-    const {contadorGlobal} = useContext(ContextoGlobal)
+    const [partidas, setPartidas] = useState([]);
 
     useEffect(() => {
+        async function fetchData() {
+            guardarDatosPartida()
+            obtenerDatosPartidas()
+        }
 
+        fetchData();
     }, []);
- 
+
+        async function guardarDatosPartida(){
+            try {
+                
+                const { data: { user } } = await supabase.auth.getUser()
+                const { data: usu, error: errorUsu } = await supabase
+                .from('partidas')
+                .insert([
+                    {
+                        usuario: user.email,
+                        puntuacion: puntuacion,
+                    }
+                ])
+                .select()
+
+                if(errorUsu)throw new Error (errorUsu.message)
+        
+            } catch (error) {
+                console.log(error)
+            }
+    
+        }
+
+        async function obtenerDatosPartidas(){
+            try {
+
+                let { data: partidas, error } = await supabase
+                .from('partidas')
+                .select('*')
+
+                setPartidas(partidas)
+
+            } catch (error) {
+                console.log(error)
+            }
+        
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const day = date.getDate();
+            const month = date.getMonth() + 1;
+            const year = date.getFullYear();
+            return `${day < 10 ? '0' + day : day}/${month < 10 ? '0' + month : month}/${year}`;
+        }
+        
+        function formatTime(dateString) {
+            const date = new Date(dateString);
+            const hours = date.getHours();
+            const minutes = date.getMinutes();
+            return `${hours < 10 ? '0' + hours : hours}:${minutes < 10 ? '0' + minutes : minutes}`;
+        }
+
     return (
-        <div className="h-full bg-cyan-900 pt-7 sm:px-6 md:px-8 lg:px-10 xl:px-12">
-            <h2 className="text-center text-cyan-100 text-4xl font-bold mb-7">RANKING PARTIDAS</h2>
-            
+
+        <div className="h-screen bg-cyan-900 pt-7 sm:px-6 md:px-8 lg:px-10 xl:px-12">
+            <div className="mx-auto container flex justify-center mb-7 space-x-0 items-center ">
+                <img className="w-[40px] mr-3" src="/pokeballAzul.png" alt="" />
+                <h2 className="text-cyan-100 text-4xl font-bold">RANKING PARTIDAS</h2>
+                <img className="w-[40px] ml-7" src="/pokeballAzul.png" alt="" />
+            </div>                  
             <div className="flex flex-col sm:flex-row items-center mb-5 py-2">
                 <input id="inputBuscar" className="bg-cyan-100 border rounded-lg w-full text-cyan-800 mr-0 sm:mr-3 py-2 px-2 focus:outline-none" type="text" placeholder="Buscador" aria-label="Buscador" />
                 <div className="flex justify-center">
@@ -36,25 +97,15 @@ export default function Ranking() {
                             <th className="text-xl bg-cyan-800 text-cyan-100">Hora<i id="flechaFecha" className="ml-3 bi bi-arrow-up-square"></i></th>
                         </tr>
                     </thead>
-                    <tbody className="" id="cuerpoTabla">
-                        <tr className="bg-cyan-100 border border-cyan-800">
-                            <td className="text-xl text-center text-cyan-800 font-bold border border-cyan-800">Usuario1</td>
-                            <td className="text-xl text-center text-cyan-800 font-bold border border-cyan-800">1000</td>
-                            <td className="text-xl text-center text-cyan-800 font-bold border border-cyan-800">2024-05-01</td>
-                            <td className="text-xl text-center text-cyan-800 font-bold border border-cyan-800"> 14:56</td>
-                        </tr>
-                        <tr className="bg-cyan-100 border border-cyan-800">
-                            <td className="text-xl text-center text-cyan-800 font-bold border border-cyan-800">Usuario2</td>
-                            <td className="text-xl text-center text-cyan-800 font-bold border border-cyan-800">800</td>
-                            <td className="text-xl text-center text-cyan-800 font-bold border border-cyan-800">2024-05-02</td>
-                            <td className="text-xl text-center text-cyan-800 font-bold border border-cyan-800"> 14:56</td>
-                        </tr>
-                        <tr className="bg-cyan-100 border border-cyan-800">
-                            <td className="text-xl text-center text-cyan-800 font-bold border border-cyan-800">Usuario3</td>
-                            <td className="text-xl text-center text-cyan-800 font-bold border border-cyan-800">1200</td>
-                            <td className="text-xl text-center text-cyan-800 font-bold border border-cyan-800">2024-05-03</td>
-                            <td className="text-xl text-center text-cyan-800 font-bold border border-cyan-800"> 14:56</td>
-                        </tr>
+                    <tbody className="">
+                        {partidas.map((partida, index) => (
+                            <tr key={index} className="bg-cyan-100 border border-cyan-800">
+                                <td className="text-xl text-center text-cyan-800 font-bold border border-cyan-800">{partida.usuario}</td>
+                                <td className="text-xl text-center text-cyan-800 font-bold border border-cyan-800">{partida.puntuacion}</td>
+                                <td className="text-xl text-center text-cyan-800 font-bold border border-cyan-800">{formatDate(partida.created_at)}</td>
+                                <td className="text-xl text-center text-cyan-800 font-bold border border-cyan-800">{formatTime(partida.created_at)}</td>
+                            </tr>
+                        ))}
                     </tbody>
                     <tfoot></tfoot>
                 </table>
