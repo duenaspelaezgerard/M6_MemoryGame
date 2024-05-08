@@ -46,7 +46,7 @@ export function ContextoGlobalProvider ({children}){
             usuario, setUsuario,
             isLoggedIn, setIsLoggedIn,
             verSiHaySesionLogeado,
-            puntuacion, setPuntuacion
+            puntuacion, setPuntuacion,
         }}>
             {children}
         </ContextoGlobal.Provider>

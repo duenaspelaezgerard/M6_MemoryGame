@@ -5,6 +5,7 @@ import { Route, Routes } from 'react-router-dom'
 import VistaHome from "./vistas/VistaHome.jsx";
 import Registro from "./vistas/Registro.jsx";
 import Login from "./vistas/Login.jsx";
+import Ranking from "./vistas/Ranking.jsx";
 
 
 function App() {
@@ -18,7 +19,7 @@ function App() {
                 <Route path='/juego' element={<Juego/>}/>
                 <Route path='/registro' element={<Registro/>}/>
                 <Route path='/' element={<Login/>}/>
-                {/* <Route path='/acercade' element={<VistaAcercaDe/>}/> */}
+                <Route path='/ranking' element={<Ranking/>}/>
             </Routes>
       </ContextoGlobalProvider>
 

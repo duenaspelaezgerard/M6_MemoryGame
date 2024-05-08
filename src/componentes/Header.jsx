@@ -1,4 +1,4 @@
-import { useContext} from "react";
+import { useContext, useState} from "react";
 import { Link, useNavigate } from "react-router-dom"
 import { ContextoGlobal } from "../context/ContextoGlobal"
 import { supabase } from "../supabase/Supabase";
@@ -6,6 +6,7 @@ import { supabase } from "../supabase/Supabase";
 export default function Header() {
 
     const {isLoggedIn, setIsLoggedIn} = useContext(ContextoGlobal)
+    const [usuario, setUsuario] = useState(0);
     const navigate = useNavigate()
 
     const handleLogout = () => {
@@ -13,6 +14,23 @@ export default function Header() {
       navigate('/')
       cerrarSesion()
     }
+
+    verSiHaySesionLogeado()
+
+    async function verSiHaySesionLogeado(){
+
+      try {
+          const { data: { user } } = await supabase.auth.getUser()
+          
+          if(user){
+            setUsuario(user.email)
+          }
+
+      } catch (error) {
+          console.log(error)
+      }
+      
+  }
 
     async function cerrarSesion(){
 
@@ -49,7 +67,7 @@ export default function Header() {
               </>
             )}
           </ul>
-          <ul className="flex space-x-4 justify-between">
+          <ul className="flex space-x-4 justify-between items-center">
             {isLoggedIn && (
               <>
                 <ul>
@@ -59,15 +77,10 @@ export default function Header() {
                     </Link>
                   </li>
                 </ul>
-                <ul className="flex space-x-3">
+                <ul className="flex space-x-3 items-center">
                   <li>
                     <Link to="/juego" className="bg-cyan-100 font-bold text-cyan-800 border p-2 px-3 shadow-lg">
                       Pokemon Memory
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to="/juego" className="bg-cyan-100 font-bold text-cyan-800 border p-2 px-3 shadow-lg">
-                      Marvel Memory
                     </Link>
                   </li>
                   <li>
@@ -76,7 +89,10 @@ export default function Header() {
                     </Link>
                   </li>
                 </ul>
-                <ul>
+                <ul className="flex items-center">
+                  <li className="bg-cyan-100 font-bold text-cyan-800 border p-2 me-2">
+                    {usuario}
+                  </li>
                   <li>
                     <Link to="/" onClick={handleLogout} className="bg-cyan-100 font-bold text-cyan-800 border p-2 me-2">
                       Cerrar Sesión

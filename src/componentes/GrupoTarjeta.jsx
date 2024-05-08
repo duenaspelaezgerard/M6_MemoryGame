@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import Tarjeta from './Tarjeta';
 import { ContextoGlobal } from "../context/ContextoGlobal"
 
@@ -10,9 +10,6 @@ export default function GrupoTarjeta({ tarjetas }) {
     const [idCoincidentes, setIdCoincidentes] = useState([]);
 
     const handleCardClick = (id, estado) => {
-
-        console.log('id', id)
-        console.log('estado', estado) 
 
         if (primerClick === null) {
             const primeraCarta = tarjetas.find(tarjeta => tarjeta.id === id)
@@ -30,22 +27,15 @@ export default function GrupoTarjeta({ tarjetas }) {
     };
 
     const compararCartas = (primerClick, segundoClick) => {
-        const primeraCarta = tarjetas.find(tarjeta => tarjeta.id === primerClick);
-        console.log('primeraCarta', primeraCarta)
-        const segundaCarta = tarjetas.find(tarjeta => tarjeta.id === segundoClick);
-        console.log('segundaCarta', segundaCarta)
-    
-        if (primeraCarta.idPokemon === segundaCarta.idPokemon) {
 
-            console.log('ENHORABUENA HAS ENCONTRADO UNA PAREJA')
+        const primeraCarta = tarjetas.find(tarjeta => tarjeta.id === primerClick);
+        const segundaCarta = tarjetas.find(tarjeta => tarjeta.id === segundoClick);
+
+        if (primeraCarta.idPokemon === segundaCarta.idPokemon) {
             setIdCoincidentes([...idCoincidentes, primerClick, segundoClick]);
             setPuntuacion(puntuacion + 10);
         } else {
-
-            console.log('Oops! Las cartas no coinciden');
-            console.log('tarjetasGiradas', tarjetasGiradas)
             setTimeout(() => {
-
                 primeraCarta.estado = false;
                 segundaCarta.estado = false;
             }, 500); 

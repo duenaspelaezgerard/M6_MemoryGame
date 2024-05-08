@@ -1,11 +1,14 @@
 import { useContext, useEffect, useState } from "react";
 import GrupoTarjeta from "../componentes/GrupoTarjeta"
 import { ContextoGlobal } from "../context/ContextoGlobal.jsx";
+import { useNavigate } from "react-router-dom";
 
 export default function Juego() {
     const [pokemonAletorios, setPokemonsAleatorios] = useState([]);
     const [timeLeft, setTimeLeft] = useState(20);
     const {puntuacion} = useContext(ContextoGlobal)
+    const navigate = useNavigate()
+    
 
     useEffect(() => {
         async function fetchData(){
@@ -52,8 +55,9 @@ export default function Juego() {
 
         const timer = setTimeout(() => {
           setTimeLeft(prevTime => {
-            if(prevTime <= 1) {
-              clearTimeout(timer);    
+            if(prevTime < 1) {
+              clearTimeout(timer);
+              navigate('/ranking')    
               return 0;
             } else {
               return prevTime - 1;
@@ -77,14 +81,16 @@ export default function Juego() {
     }
 
     return (
-
+        <div className="bg-cyan-100">
             <div className="container mx-auto">
-                        <h1 className="text-3xl text-center uppercase mt-3">Pokemons Memory</h1>
+                        <h1 className="text-3xl text-center uppercase">Pokemons Memory</h1>
                         <ContadorGlobal />
                         <button className="text-white bg-gray-800 px-4 py-2 rounded mt-4">Tiempo Restante: {timeLeft}s</button>
                         <button className="text-white bg-gray-800 px-4 py-2 rounded ml-4 mt-4">Puntuacion: {puntuacion}</button>
                         <GrupoTarjeta tarjetas={pokemonAletorios} setPokemonsAleatorios={setPokemonsAleatorios}/>
             </div>
+        </div>
+            
 
     )
 }
