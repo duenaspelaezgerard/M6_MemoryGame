@@ -2,12 +2,14 @@ import { useContext, useEffect, useState } from "react";
 import GrupoTarjeta from "../componentes/GrupoTarjeta"
 import { ContextoGlobal } from "../context/ContextoGlobal.jsx";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "../supabase/Supabase";
 
 export default function Juego() {
     const [pokemonAletorios, setPokemonsAleatorios] = useState([]);
     const [numerosAleatorios, setNumerosAleatorios] = useState([]);
     const [timeLeft, setTimeLeft] = useState(20);
     const {puntuacion} = useContext(ContextoGlobal)
+    const [shouldNavigate, setShouldNavigate] = useState(false);
     const navigate = useNavigate()
     
 
@@ -64,12 +66,14 @@ export default function Juego() {
         fetchData();
     }, []);
 
+
+
     useEffect(() => {
 
         const timer = setTimeout(() => {
           setTimeLeft(prevTime => {
             if(prevTime < 1) {
-                navigate('/ranking')
+                setShouldNavigate(true)
                 clearTimeout(timer)   
                 return 0
             } else {
@@ -80,9 +84,41 @@ export default function Juego() {
 
         return () => clearTimeout(timer)
 
-      }, [timeLeft]);
+    }, [timeLeft]);
 
+
+    useEffect(() => {
+        if (shouldNavigate) {
+            guardarDatosPartida();
+            navigate('/ranking');
+        }
+
+        
+
+    }, [shouldNavigate, navigate]);
+
+    async function guardarDatosPartida(){
+        try {
+            
+            const { data: { user } } = await supabase.auth.getUser()
+            const { data: usu, error: errorUsu } = await supabase
+            .from('partidas')
+            .insert([
+                {
+                    usuario: user.email,
+                    puntuacion: puntuacion,
+                }
+            ])
+            .select()
+
+            if(errorUsu)throw new Error (errorUsu.message)
     
+        } catch (error) {
+            console.log(error)
+        }
+
+    }
+
     const ContadorGlobal = () => {
         const { contadorGlobal } = useContext(ContextoGlobal);
   

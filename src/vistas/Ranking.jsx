@@ -3,40 +3,12 @@ import { ContextoGlobal } from "../context/ContextoGlobal.jsx";
 import { supabase } from "../supabase/Supabase";
 
 export default function Ranking() {
-    const {puntuacion} = useContext(ContextoGlobal)
     const [partidas, setPartidas] = useState([]);
 
     useEffect(() => {
-        async function fetchData() {
-            guardarDatosPartida()
-            obtenerDatosPartidas()
-        }
-
-        fetchData();
-    }, []);
-
-        async function guardarDatosPartida(){
-            try {
-                
-                const { data: { user } } = await supabase.auth.getUser()
-                const { data: usu, error: errorUsu } = await supabase
-                .from('partidas')
-                .insert([
-                    {
-                        usuario: user.email,
-                        puntuacion: puntuacion,
-                    }
-                ])
-                .select()
-
-                if(errorUsu)throw new Error (errorUsu.message)
+        obtenerDatosPartidas();
+    }, []); 
         
-            } catch (error) {
-                console.log(error)
-            }
-    
-        }
-
         async function obtenerDatosPartidas(){
             try {
 
