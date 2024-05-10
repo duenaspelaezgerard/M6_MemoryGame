@@ -84,8 +84,8 @@ export default function Header() {
                     </Link>
                   </li>
                   <li>
-                    <Link to="/acercade" className="bg-cyan-100 font-bold text-cyan-800 border p-2 px-3 shadow-lg">
-                      Acerca de
+                    <Link to="/ranking" className="bg-cyan-100 font-bold text-cyan-800 border p-2 px-3 shadow-lg">
+                      Ranking
                     </Link>
                   </li>
                 </ul>

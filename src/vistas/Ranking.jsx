@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "../supabase/Supabase";
 
 export default function Ranking() {
