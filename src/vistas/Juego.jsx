@@ -71,7 +71,8 @@ export default function Juego() {
 
         const timer = setTimeout(async() => {
             if(timeLeft > 0) {
-                setTimeLeft(timeLeft - 1);
+
+                navigate('/ranking');
             } else {
 
                 const { data: { user } } = await supabase.auth.getUser()
@@ -87,7 +88,7 @@ export default function Juego() {
 
                 if(errorUsu)throw new Error (errorUsu.message)
 
-                navigate('/ranking');
+                
                     
             }
         }, 1000);
