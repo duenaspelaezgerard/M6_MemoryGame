@@ -8,7 +8,8 @@ export default function Juego() {
     const [pokemonAletorios, setPokemonsAleatorios] = useState([]);
     const [timeLeft, setTimeLeft] = useState(20);
     const {puntuacion} = useContext(ContextoGlobal)
-
+    const {juego} = useContext(ContextoGlobal)
+    
    
     const navigate = useNavigate()
     
@@ -65,11 +66,10 @@ export default function Juego() {
         fetchData();
     }, []);
 
+    setTimeout(async() => {
 
+        if(juego==true){
 
-    useEffect(() => {
-
-        const timer = setTimeout(async() => {
             if(timeLeft > 0) {
                 setTimeLeft(timeLeft - 1);
             } else {
@@ -88,14 +88,12 @@ export default function Juego() {
                 if(errorUsu)throw new Error (errorUsu.message)
 
                 navigate('/ranking');
+                setTimeLeft(1)
                     
             }
-        }, 1000);
-
-        return () => clearTimeout(timer)
-
-    }, [timeLeft]);
-
+        }
+        
+    }, 1000);
 
     const ContadorGlobal = () => {
         const { contadorGlobal } = useContext(ContextoGlobal);

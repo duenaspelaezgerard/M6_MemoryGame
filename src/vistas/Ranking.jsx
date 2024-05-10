@@ -3,6 +3,7 @@ import { supabase } from "../supabase/Supabase";
 
 export default function Ranking() {
     const [partidas, setPartidas] = useState([]);
+    const [nombreUsuario, setNombreUsuario] = useState([]);
 
     useEffect(() => {
         obtenerDatosPartidas();
@@ -12,9 +13,14 @@ export default function Ranking() {
 
                 let { data: partidas, error } = await supabase
                 .from('partidas')
-                .select('*')
+                .select(
+                    `*, usuarios (*)`)
 
                 setPartidas(partidas)
+                console.log(partidas)
+
+
+
 
             } catch (error) {
                 console.log(error)
@@ -73,7 +79,7 @@ export default function Ranking() {
                     <tbody className="">
                         {partidas.map((partida, index) => (
                             <tr key={index} className="bg-cyan-100 border border-cyan-800">
-                                <td className="text-xl text-center text-cyan-800 font-bold border border-cyan-800">{partida.usuario}</td>
+                                <td className="text-xl text-center text-cyan-800 font-bold border border-cyan-800">{partida.usuarios.nombre}</td>
                                 <td className="text-xl text-center text-cyan-800 font-bold border border-cyan-800">{partida.puntuacion}</td>
                                 <td className="text-xl text-center text-cyan-800 font-bold border border-cyan-800">{formatDate(partida.created_at)}</td>
                                 <td className="text-xl text-center text-cyan-800 font-bold border border-cyan-800">{formatTime(partida.created_at)}</td>
