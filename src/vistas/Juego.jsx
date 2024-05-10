@@ -6,10 +6,9 @@ import { supabase } from "../supabase/Supabase";
 
 export default function Juego() {
     const [pokemonAletorios, setPokemonsAleatorios] = useState([]);
-    const [numerosAleatorios, setNumerosAleatorios] = useState([]);
     const [timeLeft, setTimeLeft] = useState(20);
     const {puntuacion} = useContext(ContextoGlobal)
-    const [shouldNavigate, setShouldNavigate] = useState(false);
+
    
     const navigate = useNavigate()
     
@@ -70,54 +69,33 @@ export default function Juego() {
 
     useEffect(() => {
 
-        const timer = setTimeout(() => {
-          setTimeLeft(prevTime => {
-            if(prevTime < 1) {
-                setShouldNavigate(true)
-                clearTimeout(timer)   
-                return 0
+        const timer = setTimeout(async() => {
+            if(timeLeft > 0) {
+                setTimeLeft(timeLeft - 1);
             } else {
-                return prevTime - 1
+
+                const { data: { user } } = await supabase.auth.getUser()
+                const { data: usu, error: errorUsu } = await supabase
+                .from('partidas')
+                .insert([
+                    {
+                        usuario: user.email,
+                        puntuacion: puntuacion,
+                    }
+                ])
+                .select()
+
+                if(errorUsu)throw new Error (errorUsu.message)
+
+                navigate('/ranking');
+                    
             }
-          });
         }, 1000);
 
         return () => clearTimeout(timer)
 
     }, [timeLeft]);
 
-
-    useEffect(() => {
-        if (shouldNavigate) {
-            guardarDatosPartida();
-            navigate('ranking');
-        }
-
-        
-
-    }, [shouldNavigate, navigate]);
-
-    async function guardarDatosPartida(){
-        try {
-            
-            const { data: { user } } = await supabase.auth.getUser()
-            const { data: usu, error: errorUsu } = await supabase
-            .from('partidas')
-            .insert([
-                {
-                    usuario: user.email,
-                    puntuacion: puntuacion,
-                }
-            ])
-            .select()
-
-            if(errorUsu)throw new Error (errorUsu.message)
-    
-        } catch (error) {
-            console.log(error)
-        }
-
-    }
 
     const ContadorGlobal = () => {
         const { contadorGlobal } = useContext(ContextoGlobal);
