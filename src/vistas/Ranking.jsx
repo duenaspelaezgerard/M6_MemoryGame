@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from "react";
-import { ContextoGlobal } from "../context/ContextoGlobal.jsx";
 import { supabase } from "../supabase/Supabase";
 
 export default function Ranking() {
@@ -7,8 +6,7 @@ export default function Ranking() {
 
     useEffect(() => {
         obtenerDatosPartidas();
-    }, []); 
-        
+
         async function obtenerDatosPartidas(){
             try {
 
@@ -23,6 +21,9 @@ export default function Ranking() {
             }
         
         }
+    }, []); 
+        
+        
 
         function formatDate(dateString) {
             const date = new Date(dateString);

@@ -10,9 +10,9 @@ export default function Juego() {
     const [timeLeft, setTimeLeft] = useState(20);
     const {puntuacion} = useContext(ContextoGlobal)
     const [shouldNavigate, setShouldNavigate] = useState(false);
+   
     const navigate = useNavigate()
     
-
     useEffect(() => {
         async function fetchData(){
 
@@ -132,7 +132,7 @@ export default function Juego() {
     return (
         <div className="bg-cyan-100 h-screen">
             <div className="container mx-auto">
-                        <h1 className="text-3xl text-center uppercase">Pokemons Memory</h1>
+                        <h1 className="text-3xl text-center uppercase">pouhpohpoih Memory</h1>
                         <ContadorGlobal />
                         <button className="text-white bg-gray-800 px-4 py-2 rounded mt-4">Tiempo Restante: {timeLeft}s</button>
                         <button className="text-white bg-gray-800 px-4 py-2 rounded ml-4 mt-4">Puntuacion: {puntuacion}</button>
