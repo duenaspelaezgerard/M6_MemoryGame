@@ -90,7 +90,7 @@ export default function Juego() {
     useEffect(() => {
         if (shouldNavigate) {
             guardarDatosPartida();
-            navigate('/ranking');
+            navigate('ranking');
         }
 
         
