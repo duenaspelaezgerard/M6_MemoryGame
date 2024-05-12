@@ -2,7 +2,7 @@ import { useContext, useState } from 'react';
 import { ContextoGlobal } from "../context/ContextoGlobal"
 
 export default function Tarjeta({ id, nombre, imagen, estado, onCardClick}) {
-    const {clicks, setClicks} = useContext(ContextoGlobal);
+    const [clicks, setClicks] = useState(0);
     const {incrementarContadorGlobal} = useContext(ContextoGlobal)
     const {setJuego} = useContext(ContextoGlobal)
 
@@ -14,6 +14,7 @@ export default function Tarjeta({ id, nombre, imagen, estado, onCardClick}) {
               onCardClick(id, estado)
               setClicks(clicks + 1)
               incrementarContadorGlobal();
+              console.log(clicks)
             }
 
           }}>

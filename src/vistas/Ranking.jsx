@@ -3,7 +3,6 @@ import { supabase } from "../supabase/Supabase";
 
 export default function Ranking() {
     const [partidas, setPartidas] = useState([]);
-    const [nombreUsuario, setNombreUsuario] = useState([]);
 
     useEffect(() => {
         obtenerDatosPartidas();

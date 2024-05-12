@@ -8,7 +8,7 @@ export default function Juego() {
     const [pokemonAletorios, setPokemonsAleatorios] = useState([]);
     const [timeLeft, setTimeLeft] = useState(20);
     const {puntuacion} = useContext(ContextoGlobal)
-    const {juego} = useContext(ContextoGlobal)
+    const {juego, setJuego} = useContext(ContextoGlobal)
     
    
     const navigate = useNavigate()
@@ -66,34 +66,40 @@ export default function Juego() {
         fetchData();
     }, []);
 
-    setTimeout(async() => {
 
-        if(juego==true){
+    useEffect(()=>{
+        console.log(juego)
 
-            if(timeLeft > 0) {
-                setTimeLeft(timeLeft - 1);
-            } else {
-
-                const { data: { user } } = await supabase.auth.getUser()
-                const { data: usu, error: errorUsu } = await supabase
-                .from('partidas')
-                .insert([
-                    {
-                        usuario: user.email,
-                        puntuacion: puntuacion,
-                    }
-                ])
-                .select()
-
-                if(errorUsu)throw new Error (errorUsu.message)
-
-                navigate('/ranking');
-                setTimeLeft(1)
-                    
-            }
-        }
+            const timer = setTimeout(async() => {
+                if(juego==true){
+                    if(timeLeft > 0) {
+                        setTimeLeft(timeLeft - 1);
+                    } else {
         
-    }, 1000);
+                        const { data: { user } } = await supabase.auth.getUser()
+                        const { data: usu, error: errorUsu } = await supabase
+                        .from('partidas')
+                        .insert([
+                            {
+                                usuario: user.email,
+                                puntuacion: puntuacion,
+                            }
+                        ])
+                        .select()
+                        if(errorUsu)throw new Error (errorUsu.message)
+                        setJuego(false)
+                        navigate('/ranking')
+                        
+
+                    }
+                }               
+            }, 1000);
+
+            return() => clearTimeout(timer)
+       
+    },[])
+
+    
 
     const ContadorGlobal = () => {
         const { contadorGlobal } = useContext(ContextoGlobal);
