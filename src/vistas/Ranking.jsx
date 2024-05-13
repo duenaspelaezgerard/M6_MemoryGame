@@ -42,14 +42,35 @@ export default function Ranking() {
 
     function toggleOrder(column) {
         if (column === 'usuario') {
-            setOrderByUsuario(column);
+            if (!orderByUsuario) {
+                setOrderByUsuario(true);
+                setOrderByPuntuacion(false);
+                setOrderByFecha(false);
+                setOrderAsc(true);
+            } else {
+                setOrderAsc(!orderAsc);
+            }
         } else if (column === 'puntuacion') {
-            setOrderByPuntuacion(column);
+            if (!orderByPuntuacion) {
+                setOrderByUsuario(false);
+                setOrderByPuntuacion(true);
+                setOrderByFecha(false);
+                setOrderAsc(true);
+            } else {
+                setOrderAsc(!orderAsc);
+            }
         } else if (column === 'fecha') {
-            setOrderByFecha(column);
+            if (!orderByFecha) {
+                setOrderByUsuario(false);
+                setOrderByPuntuacion(false);
+                setOrderByFecha(true);
+                setOrderAsc(true);
+            } else {
+                setOrderAsc(!orderAsc);
+            }
         }
-        setOrderAsc(!orderAsc);
     }
+    
 
     function sortPartidas() {
         let sortedPartidas = [...partidas];
