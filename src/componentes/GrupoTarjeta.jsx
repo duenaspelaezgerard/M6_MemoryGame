@@ -1,27 +1,27 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import Tarjeta from './Tarjeta';
 import { ContextoGlobal } from "../context/ContextoGlobal"
 
-export default function GrupoTarjeta({ tarjetas }) {
 
-    const { puntuacion, setPuntuacion } = useContext(ContextoGlobal);
-    const [primerClick, setPrimerClick] = useState(null);
-    const [tarjetasGiradas, setTarjetasGiradas] = useState([]);
-    const [idCoincidentes, setIdCoincidentes] = useState([]);
+export default function GrupoTarjeta({ tarjetas }) {
+    const {puntuacion, setPuntuacion} = useContext(ContextoGlobal)
+    const [primerClick, setPrimerClick] = useState(null)
+    const [tarjetasGiradas, setTarjetasGiradas] = useState([])
+    const [idCoincidentes, setIdCoincidentes] = useState([])
 
     const handleCardClick = (id, estado) => {
 
         if (primerClick === null) {
             const primeraCarta = tarjetas.find(tarjeta => tarjeta.id === id)
             primeraCarta.estado = true
-            setPrimerClick(id);
+            setPrimerClick(id)
         } else {
             const segundaCarta = tarjetas.find(tarjeta => tarjeta.id === id)
             segundaCarta.estado = true
-            setTarjetasGiradas([...tarjetasGiradas, primerClick, id]);
+            setTarjetasGiradas([...tarjetasGiradas, primerClick, id])
             
-            compararCartas(primerClick, id);
-            setPrimerClick(null);
+            compararCartas(primerClick, id)
+            setPrimerClick(null)
         }
         
     };
@@ -32,12 +32,12 @@ export default function GrupoTarjeta({ tarjetas }) {
         const segundaCarta = tarjetas.find(tarjeta => tarjeta.id === segundoClick);
 
         if (primeraCarta.idPokemon === segundaCarta.idPokemon) {
-            setIdCoincidentes([...idCoincidentes, primerClick, segundoClick]);
-            setPuntuacion(puntuacion + 10);
+            setIdCoincidentes([...idCoincidentes, primerClick, segundoClick])
+            setPuntuacion(puntuacion + 10)
         } else {
             setTimeout(() => {
-                primeraCarta.estado = false;
-                segundaCarta.estado = false;
+                primeraCarta.estado = false
+                segundaCarta.estado = false
             }, 500); 
         }
     };

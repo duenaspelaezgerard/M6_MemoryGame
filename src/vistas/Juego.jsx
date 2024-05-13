@@ -67,17 +67,14 @@ export default function Juego() {
     }, []);
 
 
-    useEffect(()=>{
-        console.log(juego)
-
-            const timer = setTimeout(async() => {
-                if(juego==true){
-                    if(timeLeft > 0) {
-                        setTimeLeft(timeLeft - 1);
-                    } else {
-        
-                        const { data: { user } } = await supabase.auth.getUser()
-                        const { data: usu, error: errorUsu } = await supabase
+    useEffect(() => {
+        const timer = setTimeout(async () => {
+            if (juego) {
+                if (timeLeft > 0) {
+                    setTimeLeft(prevTime => prevTime - 1);
+                } else {
+                    const { data: { user } } = await supabase.auth.getUser();
+                    const { data: usu, error: errorUsu } = await supabase
                         .from('partidas')
                         .insert([
                             {
@@ -85,22 +82,17 @@ export default function Juego() {
                                 puntuacion: puntuacion,
                             }
                         ])
-                        .select()
-                        if(errorUsu)throw new Error (errorUsu.message)
-                        setJuego(false)
-                        navigate('/ranking')
-                        
-
-                    }
-                }               
-            }, 1000);
-
-            return() => clearTimeout(timer)
-       
-    },[])
-
+                        .select();
+                    if (errorUsu) throw new Error(errorUsu.message);
+                    setJuego(false);
+                    navigate('/ranking');
+                }
+            }
+        }, 1000);
     
-
+        return () => clearTimeout(timer)
+    }, [juego, timeLeft])
+    
     const ContadorGlobal = () => {
         const { contadorGlobal } = useContext(ContextoGlobal);
   
@@ -114,7 +106,7 @@ export default function Juego() {
     return (
         <div className="bg-cyan-100 h-screen">
             <div className="container mx-auto">
-                        <h1 className="text-3xl text-center uppercase">pouhpohpoih Memory</h1>
+                        <h1 className="text-3xl text-center uppercase">POKEMON Memory</h1>
                         <ContadorGlobal />
                         <button className="text-white bg-gray-800 px-4 py-2 rounded mt-4">Tiempo Restante: {timeLeft}s</button>
                         <button className="text-white bg-gray-800 px-4 py-2 rounded ml-4 mt-4">Puntuacion: {puntuacion}</button>
